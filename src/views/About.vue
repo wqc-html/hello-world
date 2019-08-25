@@ -30,22 +30,19 @@
     <van-divider :style="{ padding: '0 16px' }">
       加入我们
     </van-divider>
-
-    <van-address-edit
-      :area-list="areaList"
-      show-postal
-      show-set-default
-      show-search-result
-    />
-
-
+    <!-- 加入我们 表单 -->
+    <JoinForm></JoinForm>
   </div>
     
 </template>
 
 <script >
+  import JoinForm  from '@/components/JoinForm'
     export default {
       name: 'about',
+      components : {
+        JoinForm
+      },
       /** 
        * 数据
       */
@@ -93,7 +90,7 @@
         },
         onChangeImgPre(index){
           this.imgPreIndex = index ;
-        }
+        },
       },
       mounted(){
         this.$store.count = 1;
