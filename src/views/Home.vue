@@ -65,6 +65,7 @@ export default {
         { name: 'toast' },
         { name: 'notify' },
         { name: 'jumpView' },
+        { name: 'jumpContentView' },
         { name: 'cancel' }
       ],
       isLoading : false,
@@ -95,6 +96,10 @@ export default {
         case "jumpView":
           //跳转页面
           this.$router.push({name : 'about' , query: { title: '关于' }})
+          break;
+        case "jumpContentView":
+          //跳转页面
+          this.$router.push({name:'content' , query:{title:'内容'}})
           break;
         case "cancel":
           break; 

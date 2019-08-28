@@ -22,6 +22,13 @@ export default new Router({
       component: function () { 
         return import(/* webpackChunkName: "about" */ './views/About.vue')
       }
+    },
+    {
+      path: '/content',
+      name: 'content',
+      component: function () { 
+        return import('./views/Content.vue')
+      }
     }
   ]
 })
