@@ -105,4 +105,674 @@ let 和 const 命令:
     // 等同于
     let ab = Object.assign({}, a, b);
 
+Proxy
+  1.概述
+    Proxy 用于修改某些操作的默认行为，等同于在语言层面做出修改，所以属于一种“元编程”（meta programming），即对编程语言进行编程。
+    Proxy 可以理解成，在目标对象之前架设一层“拦截”，外界对该对象的访问，都必须先通过这层拦截，因此提供了一种机制，可以对外界的访问进行过滤和改写。Proxy 这个词的原意是代理，用在这里表示由它来“代理”某些操作，可以译为“代理器”。
   
+Reflect
+  1.概述
+    Reflect对象与Proxy对象一样，也是 ES6 为了操作对象而提供的新 API。
+    将Object对象的一些明显属于语言内部的方法（比如Object.defineProperty），放到Reflect对象上。现阶段，某些方法同时在Object和Reflect对象上部署，未来的新方法将只部署在Reflect对象上。也就是说，从Reflect对象上可以拿到语言内部的方法。
+    修改某些Object方法的返回结果，让其变得更合理。比如，Object.defineProperty(obj, name, desc)在无法定义属性时，会抛出一个错误，而Reflect.defineProperty(obj, name, desc)则会返回false。
+
+Promise
+  1.含义
+    Promise 是异步编程的一种解决方案
+    所谓Promise，简单说就是一个容器，里面保存着某个未来才会结束的事件（通常是一个异步操作）的结果
+  
+  2.Promise对象有以下两个特点
+    1）对象的状态不受外界影响。Promise对象代表一个异步操作，有三种状态：pending（进行中）、fulfilled（已成功）和rejected（已失败）。只有异步操作的结果，可以决定当前是哪一种状态，任何其他操作都无法改变这个状态。这也是Promise这个名字的由来，它的英语意思就是“承诺”，表示其他手段无法改变。
+    2）一旦状态改变，就不会再变，任何时候都可以得到这个结果。Promise对象的状态改变，只有两种可能：从pending变为fulfilled和从pending变为rejected。只要这两种情况发生，状态就凝固了，不会再变了，会一直保持这个结果，这时就称为 resolved（已定型）。如果改变已经发生了，你再对Promise对象添加回调函数，也会立即得到这个结果。这与事件（Event）完全不同，事件的特点是，如果你错过了它，再去监听，是得不到结果的。
+
+  3.优点
+    有了Promise对象，就可以将异步操作以同步操作的流程表达出来，避免了层层嵌套的回调函数。
+  
+  4.基本用法
+    ES6 规定，Promise对象是一个构造函数，用来生成Promise实例。
+    下面代码创造了一个Promise实例。
+    const promise = new Promise(function(resolve, reject) {
+      // ... some code
+
+      if (/* 异步操作成功 */){
+        resolve(value);
+      } else {
+        reject(error);
+      }
+    });
+
+    Promise构造函数接受一个函数作为参数，该函数的两个参数分别是resolve和reject。它们是两个函数，由 JavaScript 引擎提供，不用自己部署。
+    resolve函数的作用是，将Promise对象的状态从“未完成”变为“成功”（即从 pending 变为 resolved），在异步操作成功时调用，并将异步操作的结果，作为参数传递出去；reject函数的作用是，将Promise对象的状态从“未完成”变为“失败”（即从 pending 变为 rejected），在异步操作失败时调用，并将异步操作报出的错误，作为参数传递出去。
+
+    Promise实例生成以后，可以用then方法分别指定resolved状态和rejected状态的回调函数。
+    promise.then(function(value) {
+      // success
+    }, function(error) {
+      // failure
+    });
+
+    then方法可以接受两个回调函数作为参数。第一个回调函数是Promise对象的状态变为resolved时调用，第二个回调函数是Promise对象的状态变为rejected时调用。其中，第二个函数是可选的，不一定要提供。这两个函数都接受Promise对象传出的值作为参数。
+
+Iterator
+  1.概念 
+    JavaScript 原有的表示“集合”的数据结构，主要是数组（Array）和对象（Object），ES6 又添加了Map和Set。这样就有了四种数据集合，用户还可以组合使用它们，定义自己的数据结构，比如数组的成员是Map，Map的成员是对象。这样就需要一种统一的接口机制，来处理所有不同的数据结构。
+
+    遍历器（Iterator）就是这样一种机制。它是一种接口，为各种不同的数据结构提供统一的访问机制。任何数据结构只要部署 Iterator 接口，就可以完成遍历操作（即依次处理该数据结构的所有成员）。
+
+    Iterator 的作用有三个：一是为各种数据结构，提供一个统一的、简便的访问接口；二是使得数据结构的成员能够按某种次序排列；三是 ES6 创造了一种新的遍历命令for...of循环，Iterator 接口主要供for...of消费。
+
+  2.Iterator 的遍历过程
+    1）创建一个指针对象，指向当前数据结构的起始位置。也就是说，遍历器对象本质上，就是一个指针对象。
+
+    2）第一次调用指针对象的next方法，可以将指针指向数据结构的第一个成员。
+
+    3）第二次调用指针对象的next方法，指针就指向数据结构的第二个成员。
+
+    4）不断调用指针对象的next方法，直到它指向数据结构的结束位置。
+
+    每一次调用next方法，都会返回数据结构的当前成员的信息。具体来说，就是返回一个包含value和done两个属性的对象。其中，value属性是当前成员的值，done属性是一个布尔值，表示遍历是否结束。
+
+Generator 函数
+  1.概念
+    Generator 函数是 ES6 提供的一种异步编程解决方案，Generator 函数有多种理解角度。语法上，首先可以把它理解成，Generator 函数是一个状态机，封装了多个内部状态。
+
+    执行 Generator 函数会返回一个遍历器对象，也就是说，Generator 函数除了状态机，还是一个遍历器对象生成函数。返回的遍历器对象，可以依次遍历 Generator 函数内部的每一个状态。
+
+    形式上，Generator 函数是一个普通函数，但是有两个特征。一是，function关键字与函数名之间有一个星号；二是，函数体内部使用yield表达式，定义不同的内部状态（yield在英语里的意思就是“产出”）。
+
+  2.异步
+    所谓"异步"，简单说就是一个任务不是连续完成的，可以理解成该任务被人为分成两段，先执行第一段，然后转而执行其他任务，等做好了准备，再回过头执行第二段。
+
+    比如，有一个任务是读取文件进行处理，任务的第一段是向操作系统发出请求，要求读取文件。然后，程序执行其他任务，等到操作系统返回文件，再接着执行任务的第二段（处理文件）。这种不连续的执行，就叫做异步。
+
+    相应地，连续的执行就叫做同步。由于是连续执行，不能插入其他任务，所以操作系统从硬盘读取文件的这段时间，程序只能干等着。
+
+  3.回调函数
+    JavaScript 语言对异步编程的实现，就是回调函数。所谓回调函数，就是把任务的第二段单独写在一个函数里面，等到重新执行这个任务的时候，就直接调用这个函数。回调函数的英语名字callback，直译过来就是"重新调用"。
+
+  4.协程
+    传统的编程语言，早有异步编程的解决方案（其实是多任务的解决方案）。其中有一种叫做"协程"（coroutine），意思是多个线程互相协作，完成异步任务。
+    协程有点像函数，又有点像线程。它的运行流程大致如下。
+      第一步，协程A开始执行。
+      第二步，协程A执行到一半，进入暂停，执行权转移到协程B。
+      第三步，（一段时间后）协程B交还执行权。
+      第四步，协程A恢复执行。
+
+  5.参数的求值策略
+    Thunk 函数早在上个世纪 60 年代就诞生了。
+    那时，编程语言刚刚起步，计算机学家还在研究，编译器怎么写比较好。一个争论的焦点是"求值策略"，即函数的参数到底应该何时求值。  
+
+    f(x + 5)
+    上面代码先定义函数f，然后向它传入表达式x + 5。请问，这个表达式应该何时求值？
+
+    一种意见是"传值调用"（call by value），即在进入函数体之前，就计算x + 5的值（等于 6），再将这个值传入函数f。C 语言就采用这种策略。
+    f(x + 5)
+    // 传值调用时，等同于
+    f(6)  
+
+    另一种意见是“传名调用”（call by name），即直接将表达式x + 5传入函数体，只在用到它的时候求值。Haskell 语言采用这种策略。
+    f(x + 5)
+    // 传名调用时，等同于
+    (x + 5) * 2
+
+    传值调用和传名调用，哪一种比较好？  
+    回答是各有利弊。传值调用比较简单，但是对参数求值的时候，实际上还没用到这个参数，有可能造成性能损失。
+
+  6.Thunk 函数的含义
+    编译器的“传名调用”实现，往往是将参数放到一个临时函数之中，再将这个临时函数传入函数体。这个临时函数就叫做 Thunk 函数。
+    
+    function f(m) {
+      return m * 2;
+    }
+
+    f(x + 5);
+
+    // 等同于
+
+    var thunk = function () {
+      return x + 5;
+    };
+
+    function f(thunk) {
+      return thunk() * 2;
+    }
+
+  7.co 模块 
+    co 模块是著名程序员 TJ Holowaychuk 于 2013 年 6 月发布的一个小工具，用于 Generator 函数的自动执行。
+    原理 : 
+          为什么 co 可以自动执行 Generator 函数？
+
+          前面说过，Generator 就是一个异步操作的容器。它的自动执行需要一种机制，当异步操作有了结果，能够自动交回执行权。
+
+          两种方法可以做到这一点。
+
+          （1）回调函数。将异步操作包装成 Thunk 函数，在回调函数里面交回执行权。
+
+          （2）Promise 对象。将异步操作包装成 Promise 对象，用then方法交回执行权。
+
+          co 模块其实就是将两种自动执行器（Thunk 函数和 Promise 对象），包装成一个模块。使用 co 的前提条件是，Generator 函数的yield命令后面，只能是 Thunk 函数或 Promise 对象。如果数组或对象的成员，全部都是 Promise 对象，也可以使用 co，
+
+
+async函数
+  1.含义
+    ES2017 标准引入了 async 函数，使得异步操作变得更加方便。
+    async 函数是什么？一句话，它就是 Generator 函数的语法糖。
+
+    //async函数写法
+    const asyncReadFile = async function () {
+      const f1 = await readFile('/etc/fstab');
+      const f2 = await readFile('/etc/shells');
+      console.log(f1.toString());
+      console.log(f2.toString());
+    };
+
+    一比较就会发现，async函数就是将 Generator 函数的星号（*）替换成async，将yield替换成await，仅此而已。
+
+    async函数对 Generator 函数的改进，体现在以下四点。
+    1）内置执行器。
+       Generator 函数的执行必须靠执行器，所以才有了co模块，而async函数自带执行器。也就是说，async函数的执行，与普通函数一模一样，只要一行。
+       上面的代码调用了asyncReadFile函数，然后它就会自动执行，输出最后结果。这完全不像 Generator 函数，需要调用next方法，或者用co模块，才能真正执行，得到最后结果。
+
+    2）更好的语义。
+       async和await，比起星号和yield，语义更清楚了。async表示函数里有异步操作，await表示紧跟在后面的表达式需要等待结果。
+    
+    3）更广的适用性。
+       co模块约定，yield命令后面只能是 Thunk 函数或 Promise 对象，而async函数的await命令后面，可以是 Promise 对象和原始类型的值（数值、字符串和布尔值，但这时会自动转成立即 resolved 的 Promise 对象）。
+
+    4）返回值是 Promise。
+       async函数的返回值是 Promise 对象，这比 Generator 函数的返回值是 Iterator 对象方便多了。你可以用then方法指定下一步的操作。
+       进一步说，async函数完全可以看作多个异步操作，包装成的一个 Promise 对象，而await命令就是内部then命令的语法糖。
+
+  
+  2.基本用法
+    async函数返回一个 Promise 对象，可以使用then方法添加回调函数。当函数执行的时候，一旦遇到await就会先返回，等到异步操作完成，再接着执行函数体内后面的语句。
+
+  3.语法
+    async 函数有多种使用形式。
+    // 函数声明
+    async function foo() {}
+
+    // 函数表达式
+    const foo = async function () {};
+
+    // 对象的方法
+    let obj = { async foo() {} };
+    obj.foo().then(...)
+
+    // Class 的方法
+    class Storage {
+      constructor() {
+        this.cachePromise = caches.open('avatars');
+      }
+
+      async getAvatar(name) {
+        const cache = await this.cachePromise;
+        return cache.match(`/avatars/${name}.jpg`);
+      }
+    }
+
+    const storage = new Storage();
+    storage.getAvatar('jake').then(…);
+
+    // 箭头函数
+    const foo = async () => {};
+
+  4.返回 Promise 对象
+    async函数返回一个 Promise 对象。
+
+    async函数内部return语句返回的值，会成为then方法回调函数的参数。
+    //语句
+    async function f() {
+      return 'hello world';
+    }
+
+    f().then(v => console.log(v))
+    // "hello world"
+
+    上面代码中，函数f内部return命令返回的值，会被then方法回调函数接收到。
+
+    async函数内部抛出错误，会导致返回的 Promise 对象变为reject状态。抛出的错误对象会被catch方法回调函数接收到。
+    //语句
+    async function f() {
+      throw new Error('出错了');
+    }
+
+    f().then(
+      v => console.log(v),
+      e => console.log(e)
+    )
+    // Error: 出错了
+
+  5.Promise 对象的状态变化
+    async函数返回的 Promise 对象，必须等到内部所有await命令后面的 Promise 对象执行完，才会发生状态改变，除非遇到return语句或者抛出错误。也就是说，只有async函数内部的异步操作执行完，才会执行then方法指定的回调函数。
+
+    下面是一个例子。
+
+    async function getTitle(url) {
+      let response = await fetch(url);
+      let html = await response.text();
+      return html.match(/<title>([\s\S]+)<\/title>/i)[1];
+    }
+    getTitle('https://tc39.github.io/ecma262/').then(console.log)
+    // "ECMAScript 2017 Language Specification"
+
+    上面代码中，函数getTitle内部有三个操作：抓取网页、取出文本、匹配页面标题。只有这三个操作全部完成，才会执行then方法里面的console.log。
+
+  6.await 命令
+    正常情况下，await命令后面是一个 Promise 对象，返回该对象的结果。如果不是 Promise 对象，就直接返回对应的值。
+
+    async function f() {
+      // 等同于
+      // return 123;
+      return await 123;
+    }
+
+    f().then(v => console.log(v))
+    // 123
+
+    上面代码中，await命令的参数是数值123，这时等同于return 123。
+
+    另一种情况是，await命令后面是一个thenable对象（即定义then方法的对象），那么await会将其等同于 Promise 对象。
+
+    await命令后面的 Promise 对象如果变为reject状态，则reject的参数会被catch方法的回调函数接收到。
+    //语句
+    async function f() {
+      await Promise.reject('出错了');
+    }
+
+    f()
+    .then(v => console.log(v))
+    .catch(e => console.log(e))
+    // 出错了
+    注意，上面代码中，await语句前面没有return，但是reject方法的参数依然传入了catch方法的回调函数。这里如果在await前面加上return，效果是一样的。
+
+    任何一个await语句后面的 Promise 对象变为reject状态，那么整个async函数都会中断执行。
+    //语句
+    async function f() {
+      await Promise.reject('出错了');
+      await Promise.resolve('hello world'); // 不会执行
+    }
+    上面代码中，第二个await语句是不会执行的，因为第一个await语句状态变成了reject。
+
+    第一个await放在try...catch结构里面，这样不管这个异步操作是否成功，第二个await都会执行。
+    //语句
+    async function f() {
+      try {
+        await Promise.reject('出错了');
+      } catch(e) {
+      }
+      return await Promise.resolve('hello world');
+    }
+
+    f()
+    .then(v => console.log(v))
+    // hello world
+
+    另一种方法是await后面的 Promise 对象再跟一个catch方法，处理前面可能出现的错误。
+    //语句
+    async function f() {
+      await Promise.reject('出错了')
+        .catch(e => console.log(e));
+      return await Promise.resolve('hello world');
+    }
+
+    f()
+    .then(v => console.log(v))
+    // 出错了
+    // hello world
+
+  7.错误处理
+    如果await后面的异步操作出错，那么等同于async函数返回的 Promise 对象被reject。
+
+    //语句
+    async function f() {
+      await new Promise(function (resolve, reject) {
+        throw new Error('出错了');
+      });
+    }
+
+    f()
+    .then(v => console.log(v))
+    .catch(e => console.log(e))
+    // Error：出错了
+
+    上面代码中，async函数f执行后，await后面的 Promise 对象会抛出一个错误对象，导致catch方法的回调函数被调用，它的参数就是抛出的错误对象。具体的执行机制，可以参考后文的“async 函数的实现原理”。
+
+    防止出错的方法，也是将其放在try...catch代码块之中。
+
+  8.使用注意点
+    第一点，前面已经说过，await命令后面的Promise对象，运行结果可能是rejected，所以最好把await命令放在try...catch代码块中。
+
+    第二点，多个await命令后面的异步操作，如果不存在继发关系，最好让它们同时触发。
+
+    let foo = await getFoo();
+    let bar = await getBar(); 
+    上面代码中，getFoo和getBar是两个独立的异步操作（即互不依赖），被写成继发关系。这样比较耗时，因为只有getFoo完成以后，才会执行getBar，完全可以让它们同时触发。
+
+    // 写法一
+    let [foo, bar] = await Promise.all([getFoo(), getBar()]);
+
+    // 写法二
+    let fooPromise = getFoo();
+    let barPromise = getBar();
+    let foo = await fooPromise;
+    let bar = await barPromise;
+    上面两种写法，getFoo和getBar都是同时触发，这样就会缩短程序的执行时间。
+
+    第三点，await命令只能用在async函数之中，如果用在普通函数，就会报错。
+    const a = () => {
+      b().then(() => c());
+    };
+    上面代码中，函数a内部运行了一个异步任务b()。当b()运行的时候，函数a()不会中断，而是继续执行。等到b()运行结束，可能a()早就运行结束了，b()所在的上下文环境已经消失了。如果b()或c()报错，错误堆栈将不包括a()。
+
+    现在将这个例子改成async函数。
+
+    const a = async () => {
+      await b();
+      c();
+    };
+
+    上面代码中，b()运行的时候，a()是暂停执行，上下文环境都保存着。一旦b()或c()报错，错误堆栈将包括a()。
+
+  9.async 函数的实现原理
+    async 函数的实现原理，就是将 Generator 函数和自动执行器，包装在一个函数里。
+
+
+Class 的基本语法
+
+  1.简介
+    类的由来 : JavaScript 语言中，生成实例对象的传统方法是通过构造函数。下面是一个例子。
+    //语句
+    function Point(x, y) {
+      this.x = x;
+      this.y = y;
+    }
+
+    Point.prototype.toString = function () {
+      return '(' + this.x + ', ' + this.y + ')';
+    };
+
+    var p = new Point(1, 2);
+
+    ES6 提供了更接近传统语言的写法，引入了 Class（类）这个概念，作为对象的模板。通过class关键字，可以定义类。
+    基本上，ES6 的class可以看作只是一个语法糖，它的绝大部分功能，ES5 都可以做到，新的class写法只是让对象原型的写法更加清晰、更像面向对象编程的语法而已。上面的代码用 ES6 的class改写，就是下面这样。
+
+    //语句
+    class Point {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+      }
+
+      toString() {
+        return '(' + this.x + ', ' + this.y + ')';
+      }
+    }
+
+    上面代码定义了一个“类”，可以看到里面有一个constructor方法，这就是构造方法，而this关键字则代表实例对象。也就是说，ES5 的构造函数Point，对应 ES6 的Point类的构造方法。
+
+    Point类除了构造方法，还定义了一个toString方法。注意，定义“类”的方法的时候，前面不需要加上function这个关键字，直接把函数定义放进去了就可以了。另外，方法之间不需要逗号分隔，加了会报错。
+
+    ES6 的类，完全可以看作构造函数的另一种写法。
+
+    //语句
+    class Point {
+      // ...
+    }
+
+    typeof Point // "function"
+    Point === Point.prototype.constructor // true
+
+    上面代码表明，类的数据类型就是函数，类本身就指向构造函数。
+
+    使用的时候，也是直接对类使用new命令，跟构造函数的用法完全一致。
+
+    //语句
+    class Bar {
+      doStuff() {
+        console.log('stuff');
+      }
+    }
+
+    var b = new Bar();
+    b.doStuff() // "stuff"
+
+    构造函数的prototype属性，在 ES6 的“类”上面继续存在。事实上，类的所有方法都定义在类的prototype属性上面。
+
+    class Point {
+      constructor() {
+        // ...
+      }
+
+      toString() {
+        // ...
+      }
+
+      toValue() {
+        // ...
+      }
+    }
+
+    // 等同于
+    Point.prototype = {
+      constructor() {},
+      toString() {},
+      toValue() {},
+    };
+
+    在类的实例上面调用方法，其实就是调用原型上的方法。
+
+  2.constructor 方法
+    constructor方法是类的默认方法，通过new命令生成对象实例时，自动调用该方法。一个类必须有constructor方法，如果没有显式定义，一个空的constructor方法会被默认添加。
+
+    //语句
+    class Point {
+    }
+
+    // 等同于
+    class Point {
+      constructor() {}
+    }
+
+    上面代码中，定义了一个空的类Point，JavaScript 引擎会自动为它添加一个空的constructor方法。
+
+
+    constructor方法默认返回实例对象（即this），完全可以指定返回另外一个对象。 
+    //语句
+    class Foo {
+      constructor() {
+        return Object.create(null);
+      }
+    }
+
+    new Foo() instanceof Foo
+    // false
+
+    类必须使用new调用，否则会报错。这是它跟普通构造函数的一个主要区别，后者不用new也可以执行。
+
+  3.类的实例
+    生成类的实例的写法，与 ES5 完全一样，也是使用new命令。前面说过，如果忘记加上new，像函数那样调用Class，将会报错。
+
+    //语句
+    class Point {
+      // ...
+    }
+
+    // 报错
+    var point = Point(2, 3);
+
+    // 正确
+    var point = new Point(2, 3);
+
+
+    与 ES5 一样，实例的属性除非显式定义在其本身（即定义在this对象上），否则都是定义在原型上（即定义在class上）。
+
+    //定义类
+    class Point {
+
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+      }
+
+      toString() {
+        return '(' + this.x + ', ' + this.y + ')';
+      }
+
+    }
+
+    var point = new Point(2, 3);
+
+    point.toString() // (2, 3)
+
+    point.hasOwnProperty('x') // true
+    point.hasOwnProperty('y') // true
+    point.hasOwnProperty('toString') // false
+    point.__proto__.hasOwnProperty('toString') // true
+
+    上面代码中，x和y都是实例对象point自身的属性（因为定义在this变量上），所以hasOwnProperty方法返回true，而toString是原型对象的属性（因为定义在Point类上），所以hasOwnProperty方法返回false。这些都与 ES5 的行为保持一致。
+
+    与 ES5 一样，类的所有实例共享一个原型对象。
+
+    //语句
+    var p1 = new Point(2,3);
+    var p2 = new Point(3,2);
+
+    p1.__proto__ === p2.__proto__
+    //true
+
+    上面代码中，p1和p2都是Point的实例，它们的原型都是Point.prototype，所以__proto__属性是相等的。
+
+    这也意味着，可以通过实例的__proto__属性为“类”添加方法。
+
+    __proto__ 并不是语言本身的特性，这是各大厂商具体实现时添加的私有属性，虽然目前很多现代浏览器的 JS 引擎中都提供了这个私有属性，但依旧不建议在生产中使用该属性，避免对环境产生依赖。生产环境中，我们可以使用 Object.getPrototypeOf 方法来获取实例对象的原型，然后再来为原型添加方法/属性。
+
+    var p1 = new Point(2,3);
+    var p2 = new Point(3,2);
+
+    p1.__proto__.printName = function () { return 'Oops' };
+
+    p1.printName() // "Oops"
+    p2.printName() // "Oops"
+
+    var p3 = new Point(4,2);
+    p3.printName() // "Oops"
+
+    上面代码在p1的原型上添加了一个printName方法，由于p1的原型就是p2的原型，因此p2也可以调用这个方法。而且，此后新建的实例p3也可以调用这个方法。这意味着，使用实例的__proto__属性改写原型，必须相当谨慎，不推荐使用，因为这会改变“类”的原始定义，影响到所有实例。
+
+  4.取值函数（getter）和存值函数（setter）
+    与 ES5 一样，在“类”的内部可以使用get和set关键字，对某个属性设置存值函数和取值函数，拦截该属性的存取行为。
+
+    class MyClass {
+      constructor() {
+        // ...
+      }
+      get prop() {
+        return 'getter';
+      }
+      set prop(value) {
+        console.log('setter: '+value);
+      }
+    }
+
+    let inst = new MyClass();
+
+    inst.prop = 123;
+    // setter: 123
+
+    inst.prop
+    // 'getter'
+
+    上面代码中，prop属性有对应的存值函数和取值函数，因此赋值和读取行为都被自定义了。
+
+    存值函数和取值函数是设置在属性的 Descriptor 对象上的。
+
+    class CustomHTMLElement {
+      constructor(element) {
+        this.element = element;
+      }
+
+      get html() {
+        return this.element.innerHTML;
+      }
+
+      set html(value) {
+        this.element.innerHTML = value;
+      }
+    }
+
+    var descriptor = Object.getOwnPropertyDescriptor(
+      CustomHTMLElement.prototype, "html"
+    );
+
+    "get" in descriptor  // true
+    "set" in descriptor  // true
+
+    上面代码中，存值函数和取值函数是定义在html属性的描述对象上面，这与 ES5 完全一致。
+
+  5.属性表达式
+    类的属性名，可以采用表达式。
+
+    let methodName = 'getArea';
+
+    class Square {
+      constructor(length) {
+        // ...
+      }
+
+      [methodName]() {
+        // ...
+      }
+    }
+
+    上面代码中，Square类的方法名getArea，是从表达式得到的。
+
+  6.Class 表达式
+    与函数一样，类也可以使用表达式的形式定义。
+
+    const MyClass = class Me {
+      getClassName() {
+        return Me.name;
+      }
+    };
+
+    上面代码使用表达式定义了一个类。需要注意的是，这个类的名字是Me，但是Me只在 Class 的内部可用，指代当前类。在 Class 外部，这个类只能用MyClass引用。
+
+    let inst = new MyClass();
+    inst.getClassName() // Me
+    Me.name // ReferenceError: Me is not defined
+
+    上面代码表示，Me只在 Class 内部有定义。
+
+    如果类的内部没用到的话，可以省略Me，也就是可以写成下面的形式。
+    const MyClass = class { /* ... */ };
+
+    采用 Class 表达式，可以写出立即执行的 Class。
+    let person = new class {
+      constructor(name) {
+        this.name = name;
+      }
+
+      sayName() {
+        console.log(this.name);
+      }
+    }('张三');
+
+    person.sayName(); // "张三"
+
+    上面代码中，person是一个立即执行的类的实例。
+
+  7.注意点 
+    1）严格模式
+    类和模块的内部，默认就是严格模式，所以不需要使用use strict指定运行模式。只要你的代码写在类或模块之中，就只有严格模式可用。考虑到未来所有的代码，其实都是运行在模块之中，所以 ES6 实际上把整个语言升级到了严格模式。
+   
+    2）不存在提升
+    类不存在变量提升（hoist），这一点与 ES5 完全不同。
+
+    new Foo(); // ReferenceError
+    class Foo {}
+
+    上面代码中，Foo类使用在前，定义在后，这样会报错，因为 ES6 不会把类的声明提升到代码头部。这种规定的原因与下文要提到的继承有关，必须保证子类在父类之后定义。
+
+    
+
