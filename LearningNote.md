@@ -775,4 +775,48 @@ Class 的基本语法
     上面代码中，Foo类使用在前，定义在后，这样会报错，因为 ES6 不会把类的声明提升到代码头部。这种规定的原因与下文要提到的继承有关，必须保证子类在父类之后定义。
 
     
+    {
+      let Foo = class {};
+      class Bar extends Foo {
+      }
+    }
 
+    上面的代码不会报错，因为Bar继承Foo的时候，Foo已经有定义了。但是，如果存在class的提升，上面代码就会报错，因为class会被提升到代码头部，而let命令是不提升的，所以导致Bar继承Foo的时候，Foo还没有定义。
+
+    3）name 属性
+    由于本质上，ES6 的类只是 ES5 的构造函数的一层包装，所以函数的许多特性都被Class继承，包括name属性。 
+    name属性总是返回紧跟在class关键字后面的类名。
+
+    4）Generator 方法
+    如果某个方法之前加上星号（*），就表示该方法是一个 Generator 函数。
+
+    5）this 的指向
+    类的方法内部如果含有this，它默认指向类的实例。但是，必须非常小心，一旦单独使用该方法，很可能报错。
+
+  8.静态方法
+    类相当于实例的原型，所有在类中定义的方法，都会被实例继承。如果在一个方法前，加上static关键字，就表示该方法不会被实例继承，而是直接通过类来调用，这就称为“静态方法”。
+    
+    class Foo {
+      static classMethod() {
+        return 'hello';
+      }
+    }
+
+    Foo.classMethod() // 'hello'
+
+    var foo = new Foo();
+    foo.classMethod()
+    // TypeError: foo.classMethod is not a function
+
+    上面代码中，Foo类的classMethod方法前有static关键字，表明该方法是一个静态方法，可以直接在Foo类上调用（Foo.classMethod()），而不是在Foo类的实例上调用。如果在实例上调用静态方法，会抛出一个错误，表示不存在该方法。
+
+    注意，如果静态方法包含this关键字，这个this指的是类，而不是实例。 静态方法可以与非静态方法重名。
+
+    父类的静态方法，可以被子类继承。
+
+    静态方法也是可以从super对象上调用的。
+
+  9.实例属性的新写法
+    实例属性除了定义在constructor()方法里面的this上面，也可以定义在类的最顶层。
+
+    
