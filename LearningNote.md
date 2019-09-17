@@ -819,4 +819,347 @@ Class 的基本语法
   9.实例属性的新写法
     实例属性除了定义在constructor()方法里面的this上面，也可以定义在类的最顶层。
 
+  10.静态属性
+    静态属性指的是 Class 本身的属性，即Class.propName，而不是定义在实例对象（this）上的属性。
+
+    //写法
+    class Foo {
+      static myStaticProp = 42;
+    }
     
+  11.私有方法和私有属性
+    私有方法和私有属性，是只能在类的内部访问的方法和属性，外部不能访问。这是常见需求，有利于代码的封装，但 ES6 不提供，只能通过变通方法模拟实现。
+    一种做法是在命名上加以区别。
+    另一种方法就是索性将私有方法移出模块，因为模块内部的所有方法都是对外可见的。
+    
+    
+  12.私有属性的提案 
+    目前，有一个提案，为class加了私有属性。方法是在属性名之前，使用#表示。
+
+    //语句
+    class IncreasingCounter {
+      #count = 0;
+    }
+
+    上面代码中，#count就是私有属性，只能在类的内部使用（this.#count）。如果在类的外部使用，就会报错。
+
+    //语句
+    const counter = new IncreasingCounter();
+    counter.#count // 报错
+    counter.#count = 42 // 报错
+
+    上面代码在类的外部，读取私有属性，就会报错。
+
+    下面是另一个例子。
+
+    class Point {
+      #x;
+
+      get x() {
+        return this.#x;
+      }
+    }
+
+    上面代码中，#x就是私有属性，在Point类之外是读取不到这个属性的。由于井号#是属性名的一部分，使用时必须带有#一起使用，所以#x和x是两个不同的属性。
+
+    之所以要引入一个新的前缀#表示私有属性，而没有采用private关键字，是因为 JavaScript 是一门动态语言，没有类型声明，使用独立的符号似乎是唯一的比较方便可靠的方法，能够准确地区分一种属性是否为私有属性。另外，Ruby 语言使用@表示私有属性，ES6 没有用这个符号而使用#，是因为@已经被留给了 Decorator。
+
+    这种写法不仅可以写私有属性，还可以用来写私有方法。
+
+    class Foo {
+      #a;
+      #b;
+      
+      #sum() {
+        return #a + #b;
+      }
+    }
+
+    上面代码中，#sum()就是一个私有方法。
+
+    另外，私有属性也可以设置 getter 和 setter 方法。
+    class Counter {
+      #xValue = 0;
+
+      get #x() { return #xValue; }
+      set #x(value) { this.#xValue = value; }
+    }
+
+    上面代码中，#x是一个私有属性，它的读写都通过get #x()和set #x()来完成。
+
+    私有属性不限于从this引用，只要是在类的内部，实例也可以引用私有属性。
+
+    class Foo {
+      #privateValue = 42;
+      static getPrivateValue(foo) {
+        return foo.#privateValue;
+      }
+    }
+
+    Foo.getPrivateValue(new Foo()); // 42
+
+    上面代码允许从实例foo上面引用私有属性。
+
+    私有属性和私有方法前面，也可以加上static关键字，表示这是一个静态的私有属性或私有方法。
+
+    //语句
+    class FakeMath {
+      static PI = 22 / 7;
+      static #totallyRandomNumber = 4;
+
+      static #computeRandomNumber() {
+        return FakeMath.#totallyRandomNumber;
+      }
+
+      static random() {
+        console.log('I heard you like random numbers…')
+        return FakeMath.#computeRandomNumber();
+      }
+    }
+
+    FakeMath.PI // 3.142857142857143
+    FakeMath.random()
+    // I heard you like random numbers…
+    // 4
+    FakeMath.#totallyRandomNumber // 报错
+    FakeMath.#computeRandomNumber() // 报错
+
+    上面代码中，#totallyRandomNumber是私有属性，#computeRandomNumber()是私有方法，只能在FakeMath这个类的内部调用，外部调用就会报错。
+
+  
+  13.new.target 属性 
+    new是从构造函数生成实例对象的命令。ES6 为new命令引入了一个new.target属性，该属性一般用在构造函数之中，返回new命令作用于的那个构造函数。如果构造函数不是通过new命令或Reflect.construct()调用的，new.target会返回undefined，因此这个属性可以用来确定构造函数是怎么调用的。
+
+    function Person(name) {
+      if (new.target !== undefined) {
+        this.name = name;
+      } else {
+        throw new Error('必须使用 new 命令生成实例');
+      }
+    }
+
+    // 另一种写法
+    function Person(name) {
+      if (new.target === Person) {
+        this.name = name;
+      } else {
+        throw new Error('必须使用 new 命令生成实例');
+      }
+    }
+
+    var person = new Person('张三'); // 正确
+    var notAPerson = Person.call(person, '张三');  // 报错
+
+    上面代码确保构造函数只能通过new命令调用。
+
+    Class 内部调用new.target，返回当前 Class。
+
+    需要注意的是，子类继承父类时，new.target会返回子类。
+
+    注意，在函数外部，使用new.target会报错。
+
+
+Class 的继承
+  1.简介
+    Class 可以通过extends关键字实现继承，这比 ES5 的通过修改原型链实现继承，要清晰和方便很多。  
+
+    class Point {
+    }
+
+    class ColorPoint extends Point {
+    }
+
+    上面代码定义了一个ColorPoint类，该类通过extends关键字，继承了Point类的所有属性和方法。但是由于没有部署任何代码，所以这两个类完全一样，等于复制了一个Point类。下面，我们在ColorPoint内部加上代码。
+
+    class ColorPoint extends Point {
+      constructor(x, y, color) {
+        super(x, y); // 调用父类的constructor(x, y)
+        this.color = color;
+      }
+
+      toString() {
+        return this.color + ' ' + super.toString(); // 调用父类的toString()
+      }
+    }
+
+    上面代码中，constructor方法和toString方法之中，都出现了super关键字，它在这里表示父类的构造函数，用来新建父类的this对象。
+
+    子类必须在constructor方法中调用super方法，否则新建实例时会报错。这是因为子类自己的this对象，必须先通过父类的构造函数完成塑造，得到与父类同样的实例属性和方法，然后再对其进行加工，加上子类自己的实例属性和方法。如果不调用super方法，子类就得不到this对象。
+
+    class Point { /* ... */ }
+
+    class ColorPoint extends Point {
+      constructor() {
+      }
+    }
+
+    let cp = new ColorPoint(); // ReferenceError
+
+    上面代码中，ColorPoint继承了父类Point，但是它的构造函数没有调用super方法，导致新建实例时报错。
+
+    ES5 的继承，实质是先创造子类的实例对象this，然后再将父类的方法添加到this上面（Parent.apply(this)）。ES6 的继承机制完全不同，实质是先将父类实例对象的属性和方法，加到this上面（所以必须先调用super方法），然后再用子类的构造函数修改this。
+
+    如果子类没有定义constructor方法，这个方法会被默认添加，代码如下。也就是说，不管有没有显式定义，任何一个子类都有constructor方法。
+
+    class ColorPoint extends Point {
+    }
+
+    // 等同于
+    class ColorPoint extends Point {
+      constructor(...args) {
+        super(...args);
+      }
+    } 
+
+    另一个需要注意的地方是，在子类的构造函数中，只有调用super之后，才可以使用this关键字，否则会报错。这是因为子类实例的构建，基于父类实例，只有super方法才能调用父类实例。
+
+    class Point {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+      }
+    }
+
+    class ColorPoint extends Point {
+      constructor(x, y, color) {
+        this.color = color; // ReferenceError
+        super(x, y);
+        this.color = color; // 正确
+      }
+    }
+
+    上面代码中，子类的constructor方法没有调用super之前，就使用this关键字，结果报错，而放在super方法之后就是正确的。
+
+    下面是生成子类实例的代码。
+    let cp = new ColorPoint(25, 8, 'green');
+
+    cp instanceof ColorPoint // true
+    cp instanceof Point // true
+    上面代码中，实例对象cp同时是ColorPoint和Point两个类的实例，这与 ES5 的行为完全一致。
+
+    最后，父类的静态方法，也会被子类继承。
+    class A {
+      static hello() {
+        console.log('hello world');
+      }
+    }
+
+    class B extends A {
+    }
+
+    B.hello()  // hello world
+
+    上面代码中，hello()是A类的静态方法，B继承A，也继承了A的静态方法。
+
+  2.Object.getPrototypeOf()
+    Object.getPrototypeOf方法可以用来从子类上获取父类。
+
+    Object.getPrototypeOf(ColorPoint) === Point
+    // true
+    因此，可以使用这个方法判断，一个类是否继承了另一个类。
+
+  3.super 关键字
+    super这个关键字，既可以当作函数使用，也可以当作对象使用。在这两种情况下，它的用法完全不同。
+
+    第一种情况，super作为函数调用时，代表父类的构造函数。ES6 要求，子类的构造函数必须执行一次super函数。
+
+    注意，super虽然代表了父类A的构造函数，但是返回的是子类B的实例，即super内部的this指的是B的实例，因此super()在这里相当于A.prototype.constructor.call(this)。
+
+    作为函数时，super()只能用在子类的构造函数之中，用在其他地方就会报错。
+    class A {}
+
+    class B extends A {
+      m() {
+        super(); // 报错
+      }
+    }
+
+    第二种情况，super作为对象时，在普通方法中，指向父类的原型对象；在静态方法中，指向父类。
+    class A {
+      p() {
+        return 2;
+      }
+    }
+
+    class B extends A {
+      constructor() {
+        super();
+        console.log(super.p()); // 2
+      }
+    }
+
+    let b = new B();   
+
+    上面代码中，子类B当中的super.p()，就是将super当作一个对象使用。这时，super在普通方法之中，指向A.prototype，所以super.p()就相当于A.prototype.p()。
+
+    这里需要注意，由于super指向父类的原型对象，所以定义在父类实例上的方法或属性，是无法通过super调用的。
+    class A {
+      constructor() {
+        this.p = 2;
+      }
+    }
+
+    class B extends A {
+      get m() {
+        return super.p;
+      }
+    }
+
+    let b = new B();
+    b.m // undefined
+
+    上面代码中，p是父类A实例的属性，super.p就引用不到它。
+
+    如果属性定义在父类的原型对象上，super就可以取到。
+    class A {}
+    A.prototype.x = 2;
+
+    class B extends A {
+      constructor() {
+        super();
+        console.log(super.x) // 2
+      }
+    }
+
+    let b = new B();
+
+    上面代码中，属性x是定义在A.prototype上面的，所以super.x可以取到它的值。
+
+    ES6 规定，在子类普通方法中通过super调用父类的方法时，方法内部的this指向当前的子类实例。
+    由于this指向子类实例，所以如果通过super对某个属性赋值，这时super就是this，赋值的属性会变成子类实例的属性。
+
+    如果super作为对象，用在静态方法之中，这时super将指向父类静态方法，而不是父类的原型对象。 在普通方法之中指向父类的原型对象。
+    
+    另外，在子类的静态方法中通过super调用父类的方法时，方法内部的this指向当前的子类，而不是子类的实例。
+
+    注意，使用super的时候，必须显式指定是作为函数、还是作为对象使用，否则会报错。
+
+    最后，由于对象总是继承其他对象的，所以可以在任意一个对象中，使用super关键字。
+
+  4.类的 prototype 属性和__proto__属性
+    大多数浏览器的 ES5 实现之中，每一个对象都有__proto__属性，指向对应的构造函数的prototype属性。Class 作为构造函数的语法糖，同时有prototype属性和__proto__属性，因此同时存在两条继承链。
+
+    1）子类的__proto__属性，表示构造函数的继承，总是指向父类。
+
+    2）子类prototype属性的__proto__属性，表示方法的继承，总是指向父类的prototype属性。
+
+    这两条继承链，可以这样理解：作为一个对象，子类（B）的原型（__proto__属性）是父类（A）；作为一个构造函数，子类（B）的原型对象（prototype属性）是父类的原型对象（prototype属性）的实例。
+
+  5.实例的 _proto_ 属性
+    子类实例的__proto__属性的__proto__属性，指向父类实例的__proto__属性。也就是说，子类的原型的原型，是父类的原型。
+
+  6.原生构造函数的继承
+    原生构造函数是指语言内置的构造函数，通常用来生成数据结构。ECMAScript 的原生构造函数大致有下面这些。
+
+    Boolean()
+    Number()
+    String()
+    Array()
+    Date()
+    Function()
+    RegExp()
+    Error()
+    Object()
+
+    
+
