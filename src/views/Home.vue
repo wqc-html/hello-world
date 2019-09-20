@@ -49,6 +49,8 @@
 <script>
 // @ is an alias to /src
 import HelloWorld from '@/components/HelloWorld.vue'
+import  {obj}   from "@/api/selfExport.js";
+
 
 export default {
   name: 'home',
@@ -116,5 +118,9 @@ export default {
       }, 1000);
     }
   },
+  mounted(){
+      obj.a = 123;
+      console.log(obj)
+  }
 }
 </script>
