@@ -1766,7 +1766,165 @@ Module 的加载实现
 
     import命令加载模块，module.exports会被视为默认输出，即import命令实际上输入的是这样一个对象{ default: module.exports }。
 
+    CommonJS 模块的输出缓存机制，在 ES6 加载方式下依然有效。
 
-    
+    ES6 模块是编译时确定输出接口，CommonJS 模块是运行时确定输出接口
+
+    import命令加载 CommonJS 模块时，不允许采用下面的写法。
+
+    // 不正确
+    import { readFile } from 'fs';
+
+    上面的写法不正确，因为fs是 CommonJS 格式，只有在运行时才能确定readFile接口，而import命令要求编译时就确定这个接口。解决方法就是改为整体输入。
+
+    // 正确的写法一
+    import * as express from 'express';
+    const app = express.default();
+
+    // 正确的写法二
+    import express from 'express';
+    const app = express();
 
 
+  7.CommonJS 模块加载 ES6 模块
+
+    CommonJS 模块加载 ES6 模块，不能使用require命令，而要使用import()函数。ES6 模块的所有输出接口，会成为输入对象的属性。
+
+    // es.mjs
+    let foo = { bar: 'my-default' };
+    export default foo;
+    // cjs.js
+    const es_namespace = await import('./es.mjs');
+    console.log(es_namespace.default);
+
+
+  8.循环加载
+
+    “循环加载”（circular dependency）指的是，a脚本的执行依赖b脚本，而b脚本的执行又依赖a脚本。
+
+    通常，“循环加载”表示存在强耦合，如果处理不好，还可能导致递归加载，使得程序无法执行，因此应该避免出现。
+
+    但是实际上，这是很难避免的，尤其是依赖关系复杂的大项目，很容易出现a依赖b，b依赖c，c又依赖a这样的情况。这意味着，模块加载机制必须考虑“循环加载”的情况。
+
+    对于 JavaScript 语言来说，目前最常见的两种模块格式 CommonJS 和 ES6，处理“循环加载”的方法是不一样的，返回的结果也不一样。
+
+  
+  9.CommonJS 模块的加载原理 
+  
+    CommonJS 的一个模块，就是一个脚本文件。require命令第一次加载该脚本，就会执行整个脚本，然后在内存生成一个对象。
+
+    {
+      id: '...',
+      exports: { ... },
+      loaded: true,
+      ...
+    }
+
+    上面代码就是 Node 内部加载模块后生成的一个对象。该对象的id属性是模块名，exports属性是模块输出的各个接口，loaded属性是一个布尔值，表示该模块的脚本是否执行完毕。其他还有很多属性，这里都省略了。
+
+    以后需要用到这个模块的时候，就会到exports属性上面取值。即使再次执行require命令，也不会再次执行该模块，而是到缓存之中取值。也就是说，CommonJS 模块无论加载多少次，都只会在第一次加载时运行一次，以后再加载，就返回第一次运行的结果，除非手动清除系统缓存。
+
+  
+  10.CommonJS 模块的循环加载
+
+    CommonJS 模块的重要特性是加载时执行，即脚本代码在require的时候，就会全部执行。一旦出现某个模块被"循环加载"，就只输出已经执行的部分，还未执行的部分不会输出。
+
+    总之，CommonJS 输入的是被输出值的拷贝，不是引用。
+
+    另外，由于 CommonJS 模块遇到循环加载时，返回的是当前已经执行的部分的值，而不是代码全部执行后的值，两者可能会有差异。所以，输入变量的时候，必须非常小心。
+
+    var a = require('a'); // 安全的写法
+    var foo = require('a').foo; // 危险的写法
+
+    exports.good = function (arg) {
+      return a.foo('good', arg); // 使用的是 a.foo 的最新值
+    };
+
+    exports.bad = function (arg) {
+      return foo('bad', arg); // 使用的是一个部分加载时的值
+    };
+
+    上面代码中，如果发生循环加载，require('a').foo的值很可能后面会被改写，改用require('a')会更保险一点。
+
+  
+  11.ES6 模块的循环加载 
+
+    ES6 处理“循环加载”与 CommonJS 有本质的不同。ES6 模块是动态引用，如果使用import从一个模块加载变量（即import foo from 'foo'），那些变量不会被缓存，而是成为一个指向被加载模块的引用，需要开发者自己保证，真正取值的时候能够取到值。
+
+    请看下面这个例子。
+
+    // a.mjs
+    import {bar} from './b';
+    console.log('a.mjs');
+    console.log(bar);
+    export let foo = 'foo';
+
+    // b.mjs
+    import {foo} from './a';
+    console.log('b.mjs');
+    console.log(foo);
+    export let bar = 'bar';
+
+    上面代码中，a.mjs加载b.mjs，b.mjs又加载a.mjs，构成循环加载。执行a.mjs，结果如下。
+
+    ReferenceError: foo is not defined
+
+    上面代码中，执行a.mjs以后会报错，foo变量未定义，这是为什么？
+
+    让我们一行行来看，ES6 循环加载是怎么处理的。首先，执行a.mjs以后，引擎发现它加载了b.mjs，因此会优先执行b.mjs，然后再执行a.mjs。接着，执行b.mjs的时候，已知它从a.mjs输入了foo接口，这时不会去执行a.mjs，而是认为这个接口已经存在了，继续往下执行。执行到第三行console.log(foo)的时候，才发现这个接口根本没定义，因此报错。
+
+    解决这个问题的方法，就是运行的时候，foo已经有定义了。这可以通过写成函数来解决。
+
+    // a.mjs
+    import {bar} from './b';
+    console.log('a.mjs');
+    console.log(bar());
+    function foo() { return 'foo' }
+    export {foo};
+
+    // b.mjs
+    import {foo} from './a';
+    console.log('b.mjs');
+    console.log(foo());
+    function bar() { return 'bar' }
+    export {bar};
+
+    这时再执行a.mjs就可以得到预期结果。
+
+    这是因为函数具有提升作用，在执行import {bar} from './b'时，函数foo就已经有定义了，所以b.mjs加载的时候不会报错。这也意味着，如果把函数foo改写成函数表达式，也会报错。
+
+    // a.mjs
+    import {bar} from './b';
+    console.log('a.mjs');
+    console.log(bar());
+    const foo = () => 'foo';
+    export {foo};
+
+    上面代码的第四行，改成了函数表达式，就不具有提升作用，执行就会报错。
+
+
+  12.ES6 模块的转码
+
+    浏览器目前还不支持 ES6 模块，为了现在就能使用，可以将其转为 ES5 的写法。除了 Babel 可以用来转码之外，还有以下两个方法，也可以用来转码。
+
+    ES6 module transpiler 
+    ES6 module transpiler是 square 公司开源的一个转码器，可以将 ES6 模块转为 CommonJS 模块或 AMD 模块的写法，从而在浏览器中使用。
+
+    SystemJS 
+    另一种解决方法是使用 SystemJS。它是一个垫片库（polyfill），可以在浏览器内加载 ES6 模块、AMD 模块和 CommonJS 模块，将其转为 ES5 格式。它在后台调用的是 Google 的 Traceur 转码器。
+
+
+编程风格
+
+  块级作用域
+  字符串
+  解构赋值
+  对象
+  数组
+  函数
+  Map 结构
+  Class
+  模块
+  ESLint 的使用
+
+  
