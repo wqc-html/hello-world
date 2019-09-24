@@ -9,7 +9,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import value  , { demo1 , demo2 , deValue , obj}   from "@/api/selfExport.js";
+    import value, * as allObj   from "@/api/selfExport.js";
 
     export default{
       name: 'content',
@@ -51,7 +51,7 @@
         },
       },
       mounted(){
-         console.log(obj)
+         console.log(allObj)
       },
     }
 
