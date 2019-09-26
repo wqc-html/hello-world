@@ -2159,5 +2159,79 @@ ECMAScript 规格
     ECMAScript 6 的规格，可以在 ECMA 国际标准组织的官方网站（www.ecma-international.org/ecma-262/6.0/）免费下载和在线阅读。
 
 
+异步遍历器
+
+  1.同步遍历器的问题
+
+    Iterator 接口是一种数据遍历的协议，只要调用遍历器对象的next方法，就会得到一个对象，表示当前遍历指针所在的那个位置的信息。next方法返回的对象的结构是{value, done}，其中value表示当前的数据的值，done是一个布尔值，表示遍历是否结束。
+
+    这里隐含着一个规定，it.next()方法必须是同步的，只要调用就必须立刻返回值。也就是说，一旦执行it.next()方法，就必须同步地得到value和done这两个属性。如果遍历指针正好指向同步操作，当然没有问题，但对于异步操作，就不太合适了。
+
+    目前的解决方法是，将异步操作包装成 Thunk 函数或者 Promise 对象，即next()方法返回值的value属性是一个 Thunk 函数或者 Promise 对象，等待以后返回真正的值，而done属性则还是同步产生的。但是这样写很麻烦，不太符合直觉，语义也比较绕。
+
+
+  2.异步遍历的接口 
+
+    异步遍历器的最大的语法特点，就是调用遍历器的next方法，返回的是一个 Promise 对象。
+
+    asyncIterator
+      .next()
+      .then(
+        ({ value, done }) => /* ... */
+      );
+
+    上面代码中，asyncIterator是一个异步遍历器，调用next方法以后，返回一个 Promise 对象。因此，可以使用then方法指定，这个 Promise 对象的状态变为resolve以后的回调函数。回调函数的参数，则是一个具有value和done两个属性的对象，这个跟同步遍历器是一样的。
+
+  
+  3.for await...of
+
+    for...of循环用于遍历同步的 Iterator 接口。新引入的for await...of循环，则是用于遍历异步的 Iterator 接口。
+
+    async function f() {
+      for await (const x of createAsyncIterable(['a', 'b'])) {
+        console.log(x);
+      }
+    }
+    // a
+    // b
+
+  
+  4.异步 Generator 函数
+
+     Generator 函数返回一个同步遍历器对象一样，异步 Generator 函数的作用，是返回一个异步遍历器对象。
+
+     async function* gen() {
+      yield 'hello';
+    }
+    const genObj = gen();
+    genObj.next().then(x => console.log(x));
+    // { value: 'hello', done: false }
+
+
+  5.yield* 语句
+
+    yield*语句也可以跟一个异步遍历器。
+
+    async function* gen1() {
+      yield 'a';
+      yield 'b';
+      return 2;
+    }
+
+    async function* gen2() {
+      // result 最终会等于 2
+      const result = yield* gen1();
+    }
+
+
+    与同步 Generator 函数一样，for await...of循环会展开yield*。
+
+    (async function () {
+      for await (const x of gen2()) {
+        console.log(x);
+      }
+    })();
+    // a
+    // b
 
 
