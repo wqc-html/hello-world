@@ -2434,3 +2434,40 @@ ArrayBuffer
     由于视图的构造函数可以指定起始位置和长度，所以在同一段内存之中，可以依次存放不同类型的数据，这叫做“复合视图”。
 
 
+  4.DataView 视图
+
+    如果一段数据包括多种类型（比如服务器传来的 HTTP 数据），这时除了建立ArrayBuffer对象的复合视图以外，还可以通过DataView视图进行操作。
+
+  
+  5.二进制数组的应用
+
+    大量的 Web API 用到了ArrayBuffer对象和它的视图对象。
+
+    AJAX 
+      传统上，服务器通过 AJAX 操作只能返回文本数据，即responseType属性默认为text。XMLHttpRequest第二版XHR2允许服务器返回二进制数据，这时分成两种情况。如果明确知道返回的二进制数据类型，可以把返回类型（responseType）设为arraybuffer；如果不知道，就设为blob。
+
+    Canvas
+      网页Canvas元素输出的二进制像素数据，就是 TypedArray 数组。
+
+    WebSocket
+      WebSocket可以通过ArrayBuffer，发送或接收二进制数据。
+
+    Fetch API
+      Fetch API 取回的数据，就是ArrayBuffer对象。
+
+    File API
+      如果知道一个文件的二进制数据类型，也可以将这个文件读取为ArrayBuffer对象。
+
+
+  6.SharedArrayBuffer 
+
+    ES2017 引入SharedArrayBuffer，允许 Worker 线程与主线程共享同一块内存。SharedArrayBuffer的 API 与ArrayBuffer一模一样，唯一的区别是后者无法共享数据。
+
+
+  7.Atomics 对象
+
+    多线程共享内存，最大的问题就是如何防止两个线程同时修改某个地址，或者说，当一个线程修改共享内存以后，必须有一个机制让其他线程同步。SharedArrayBuffer API 提供Atomics对象，保证所有共享内存的操作都是“原子性”的，并且可以在所有线程内同步。
+
+    什么叫“原子性操作”呢？现代编程语言中，一条普通的命令被编译器处理以后，会变成多条机器指令。如果是单线程运行，这是没有问题的；多线程环境并且共享内存时，就会出问题，因为这一组机器指令的运行期间，可能会插入其他线程的指令，从而导致运行结果出错。
+
+
