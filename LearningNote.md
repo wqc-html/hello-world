@@ -2501,3 +2501,18 @@ ArrayBuffer
   13.import.meta 
 
   
+装饰器
+
+  1.类的装饰
+
+  2.方法的装饰
+
+  3.为什么装饰器不能用于函数
+
+  4.core-decorators.js
+
+  5.使用装饰器实现自动发布事件
+
+  6.Mixin
+
+  7.Trait
