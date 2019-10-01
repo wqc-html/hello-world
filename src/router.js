@@ -26,7 +26,7 @@ export default new Router({
     {
       path: '/content',
       name: 'content',
-      component: function () { 
+      component() { 
         return import('./views/Content.vue')
       }
     }
