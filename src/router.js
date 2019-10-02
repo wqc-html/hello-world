@@ -28,7 +28,34 @@ export default new Router({
       name: 'content',
       component() { 
         return import('./views/Content.vue')
-      }
+      },
+      //子路由
+      children: [
+        {
+          //商品
+          path: '/',
+          name: 'commodity',
+          component() { 
+            return import('./views/ContentChildrenView/commodity.vue')
+          },
+        },
+        {
+          //评论
+          path: '/comment',
+          name: 'comment',
+          component() { 
+            return import('./views/ContentChildrenView/comment.vue')
+          },
+        },
+        {
+          //商家
+          path: '/business',
+          name: 'business',
+          component() { 
+            return import('./views/ContentChildrenView/business.vue')
+          },
+        },
+      ]
     }
   ]
 })

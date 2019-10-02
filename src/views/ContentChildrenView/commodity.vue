@@ -1,20 +1,12 @@
 <template>
     <div>
-        <div class="tab">
-            <div class="tab-item" @click="onJumpView('commodity' , '商品')" >商品</div>
-            <div class="tab-item" @click="onJumpView('comment' , '评论')" >评论</div>
-            <div class="tab-item" @click="onJumpView('business' , '商家')" >商家</div>
-        </div>
-
-        <router-view/>
+        commodity
     </div>
 </template>
 
-<script type="text/ecmascript-6">
-    import value, * as allObj   from "@/api/selfExport.js";
-
+<script>
     export default{
-      name: 'content',
+      name: 'commodity',
       components : {
         
       },
@@ -57,21 +49,12 @@
         }
       },
       mounted(){
-         console.log(allObj)
+        //提示
+        this.$toast( this.isTitle );
       },
     }
-
 </script>
 
 <style scoped>
-    .tab{
-        display: flex;
-        width: 100%;
-        height: 40px;
-        line-height: 40px;
-    }
-    .tab-item{
-        flex: 1;
-        text-align: center;
-    }
+
 </style>
