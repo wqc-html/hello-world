@@ -34,29 +34,11 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 - JS ES5 [教程](https://wangdoc.com/javascript/)
 - JS ES6 新语法 [教程](http://es6.ruanyifeng.com/#README)
 
-```javascript
-// 箭头函数
-() => {};
-
-// Promise 异步操作
-new Promise.then(res => {}, err => {});
-
-// 解构赋值
-const response = {
-  code: "SUCCESS",
-  count: null,
-  data: null,
-  msg: "未查询到相关数据"
-};
-const { code, msg } = response;
-
-// 扩展运算符
-const obj = { a: "a", b: "b" };
-const aaa = { ...obj };
-```
 
 - [vue.js](https://cn.vuejs.org/v2/guide/) vue.js 起步
 - [vue-router](https://router.vuejs.org/zh/) 前端路由
+- [Vuex](https://vuex.vuejs.org/zh/) 专为 Vue.js 应用程序开发的状态管理模式
+- [Axios](http://www.axios-js.com/zh-cn/docs/index.html) Axios 是一个基于 promise 的 HTTP 库，用于网络请求
 - [wx-js-sdk](https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141115) 微信浏览器接口
 - [apis.map.qq.com](https://lbs.qq.com/webservice_v1/guide-gcoder.html) 腾讯地图接口，逆地址解析(坐标位置描述)
 - [vue-cli](https://cli.vuejs.org/zh/guide/) vue 项目快速构建工具
