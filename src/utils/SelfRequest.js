@@ -22,6 +22,12 @@ let config = {
 const instance = axios.create(config);
 
 /**
+ * 自定义实例默认值
+ */
+// instance.defaults.baseURL = 'https://api.example.com';
+
+
+/**
  * 请求配置
  */
 let requestConfig = {
@@ -65,7 +71,7 @@ let requestConfig = {
     timeout: timeout,
 
     // `withCredentials` 表示跨域请求时是否需要使用凭证
-    withCredentials: false, // default false
+    withCredentials: true, // default false
 
     // `responseType` 表示服务器响应的数据类型，可以是 'arraybuffer', 'blob', 'document', 'json', 'text', 'stream'
     responseType: 'json', // default
