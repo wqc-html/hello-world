@@ -13,6 +13,7 @@
 <script type="text/ecmascript-6">
     import value, * as allObj   from "@/api/selfExport.js";
     import {selfRequest} from  "@/utils/SelfRequest.js";
+import { log } from 'util';
 
     export default{
       name: 'content',
@@ -60,7 +61,7 @@
       mounted(){
         let url = "https://tcc.taobao.com/cc/json/mobile_tel_segment.htm?tel=18360702148";
         console.log(selfRequest({method: 'post' , url : url}))
-        console.log(selfRequest({ url : url}))
+        console.log(selfRequest({ url : url}));
       },
     }
 

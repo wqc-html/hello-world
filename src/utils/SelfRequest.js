@@ -35,13 +35,20 @@ let requestConfig = {
     // 它可以通过设置一个 `baseURL` 便于为 axios 实例的方法传递相对 URL
     baseURL: baseURL,
 
+    // `headers` 是即将被发送的自定义请求头
+    headers: {
+        'Content-Type':'application/x-www-form-urlencoded' ,
+        'Access-Control-Allow-Origin' : '*' ,
+        'Access-Control-Allow-Headers' : 'Authorization' ,
+    },
+
     // `params` 是即将与请求一起发送的 URL 参数
     // 必须是一个无格式对象(plain object)或 URLSearchParams 对象
     // get 请求用 params 传递参数
     params: {
     
     },
-
+    
     // `data` 是作为请求主体被发送的数据
     // 只适用于这些请求方法 'PUT', 'POST', 和 'PATCH'
     // 在没有设置 `transformRequest` 时，必须是以下类型之一：
@@ -58,7 +65,7 @@ let requestConfig = {
     timeout: timeout,
 
     // `withCredentials` 表示跨域请求时是否需要使用凭证
-    withCredentials: false, // default
+    withCredentials: false, // default false
 
     // `responseType` 表示服务器响应的数据类型，可以是 'arraybuffer', 'blob', 'document', 'json', 'text', 'stream'
     responseType: 'json', // default
