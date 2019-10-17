@@ -70,8 +70,6 @@ let requestConfig = {
     // `headers` 是即将被发送的自定义请求头
     headers: {
         'Content-Type':'application/x-www-form-urlencoded' ,
-        'Access-Control-Allow-Origin' : '*' ,
-        'Access-Control-Allow-Headers' : 'Authorization' ,
     },
 
     // `params` 是即将与请求一起发送的 URL 参数
