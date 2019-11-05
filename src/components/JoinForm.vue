@@ -26,7 +26,7 @@
       
     </van-cell-group>
 
-    <img :src="imgUrl"  style="width:100px ; height:100px"/>
+    
 
     <!-- 签名组件 -->
     <VueSignaturePad
@@ -35,6 +35,19 @@
       ref="signaturePad"
       :customStyle="signatureStyle"
     />
+
+    <!-- 清空 保存 删除 -->
+    <div class="tab">
+      <van-button class="tab-item" color="#7232dd" size="small" @click="clearImg()">清空</van-button>
+      <div style="width:10px;"></div>
+      <van-button class="tab-item" color="#7232dd" size="small" @click="undoImg()">撤销</van-button>
+      <div style="width:10px;"></div>
+      <van-button class="tab-item" color="#7232dd" size="small" @click="saveImg()">保存</van-button>
+      <div style="width:10px;"></div>
+      <van-button class="tab-item" color="#7232dd" size="small" @click="uploadImg()">上传</van-button>
+    </div>
+    
+
 
     <van-button 
       class="enterButton" 
@@ -101,16 +114,57 @@ export default {
 
       // this.$refs.signaturePad.fromDataURL("http://pic1.win4000.com/wallpaper/c/53cdd1f7c1f21.jpg")
 
-      const { isEmpty, data } = this.$refs.signaturePad.saveSignature();
-      console.log(isEmpty);
-      console.log(this.convertBase64UrlToBlob(data));
-      console.log(window.URL.createObjectURL( this.convertBase64UrlToBlob(data) ));
-
-      this.imgUrl =  window.URL.createObjectURL( this.convertBase64UrlToBlob(data) ) ;
-     
-      this.downloadFile(this.convertBase64UrlToBlob(data) , 'pic')
+      
     },
+    /**
+     *  清空图片
+     */
+    clearImg(){
+      this.$refs.signaturePad.clearSignature()
+    },
+    /**
+     *  撤销图片
+     */
+    undoImg(){
+      this.$refs.signaturePad.undoSignature();
+    },
+    /**
+     *  保存图片
+     */
+    saveImg(){
+      //得到signaturePad画板数据
+      const { isEmpty, data } = this.$refs.signaturePad.saveSignature();
+      //判断是否涂画
+      if(!isEmpty){
+        //把画板 涂画的内容保存到 本地
+        this.downloadFile(this.convertBase64UrlToBlob(data) , 'pic');
+      }else{
+        //提示 请在画板涂画
+        this.$toast({
+          message : "请在画板涂画",
+          icon : 'fail'
+        })
+      }           
+    },
+    /**
+     *  上传图片
+     */
+    uploadImg(){
+      //得到signaturePad画板数据
+      const { isEmpty, data } = this.$refs.signaturePad.saveSignature();
+      //判断是否涂画
+      if(!isEmpty){
+        
+        
 
+      }else{
+        //提示 请在画板涂画
+        this.$toast({
+          message : "请在画板涂画",
+          icon : 'fail'
+        })
+      }       
+    },
     /**
      * 将以base64的图片url数据转换为Blob
      */
@@ -163,4 +217,16 @@ export default {
     width: 90%;
     margin-top: 10px;
   }
+
+   .tab{
+        display: flex;
+        width: 80%;
+        margin: 0 auto;
+    }
+    .tab-item{
+        flex: 1;
+        text-align: center;
+        width: 150px;
+    }
+
 </style>
