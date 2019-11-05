@@ -66,6 +66,9 @@
 </template>
 
 <script>
+
+import { selfRequest } from "@/utils/SelfRequest.js";
+
 export default {
   name: 'JoinForm',
   props: {
@@ -155,7 +158,14 @@ export default {
       //判断是否涂画
       if(!isEmpty){
         
-        
+        // 使用formdata上传图片
+        var formData = new FormData();
+        //设置文件名
+        let filename = new Date().getTime() + ".png";
+        //添加图片Blob对象
+        formData.append("file", this.convertBase64UrlToBlob(data) , filename);
+
+        selfRequest({method: 'post' , url : 'http://127.0.0.1:8080/Supervision/file/upload' , data : formData})
 
       }else{
         //提示 请在画板涂画
