@@ -6,25 +6,38 @@
       <van-field
         label="姓名"
         placeholder="请输入姓名"
+        v-model="form.username"
       />
       <van-field
         label="电话"
         placeholder="请输入电话/手机号"
+        v-model="form.phone"
       />
       <van-field
         label="地区"
         placeholder="请选择省 / 市 / 区"
+        v-model="form.region"
       />
       <van-field
         label="地址"
         placeholder="街道、楼层等信息"
+        v-model="form.location"
       />
       <van-field
         label="邮政编码"
         placeholder="邮政编码"
+        v-model="form.postalCode"
       />
       
     </van-cell-group>
+
+     <van-button 
+      class="enterButton" 
+      color="#FF4444"
+      @click="submitResult"
+      >
+    确定
+    </van-button>
     
   </div>
 </template>
@@ -33,10 +46,14 @@
 export default {
     name: 'JoinUsForm',
     /**
-     * 父组件传递的数据
+     * 父组件传递的数据, 并且数据不能被修改
      */
     props: {
-      msg: String
+      username: String ,
+      phone: String ,
+      region : String,
+      location: String ,
+      postalCode: String ,
     },
     components : {
 
@@ -47,7 +64,13 @@ export default {
     data() {
       return {
         message: 'JoinUsForm',
-       
+        form : {
+          username: this.username ,
+          phone: this.phone ,
+          region : this.region,
+          location: this.location ,
+          postalCode: this.postalCode ,
+        }
       }
     },
     /**
@@ -72,7 +95,14 @@ export default {
      * 方法
     */
     methods: {
-     
+     submitResult(){
+        this.$toast({
+          message : "成功",
+          icon : 'success'
+        })
+
+        console.log(this.form)
+      },
     },
     mounted(){
      
@@ -81,5 +111,8 @@ export default {
 </script>
 
 <style  scoped>
-
+  .enterButton{
+    width: 90%;
+    margin-top: 10px;
+  }
 </style>

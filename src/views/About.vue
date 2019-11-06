@@ -19,11 +19,19 @@
     </van-divider>
 
     <!-- 加入我们 表单 -->
-    <JoinUsForm></JoinUsForm>
-    
+    <JoinUsForm :username="form.username"
+                :phone="form.phone"
+                :region="form.region"
+                :location="form.location"
+                :postalCode="form.postalCode"
+      >
+
+    </JoinUsForm>
+
     <!-- 签名 -->
     <SelfSignature></SelfSignature>
 
+     
   </div>
     
 </template>
@@ -46,13 +54,14 @@
       */
       data() {
         return {
-          message: 'Hello',
-          images: [
-            'https://img.yzcdn.cn/vant/apple-1.jpg',
-            'https://img.yzcdn.cn/vant/apple-2.jpg'
-          ],
-          isImgShow : false,
-          imgPreIndex : 0,
+          message: 'about',
+          form : {
+            username : 'wqc',
+            phone : '10086',
+            region : '江苏省',
+            location : '淮安',
+            postalCode : '223001'
+          },
         }
       },
       /**
@@ -79,15 +88,6 @@
       methods: {
         onClickBack(){
           this.$router.back();
-        },
-        onChangeImgLoop(index){
-          // this.$toast('当前 Swipe 索引：' + index);
-        },
-        onClickImg(index){
-          this.isImgShow = true;
-        },
-        onChangeImgPre(index){
-          this.imgPreIndex = index ;
         },
       },
       mounted(){

@@ -22,20 +22,6 @@
     </div>
     
 
-
-    <van-button 
-      class="enterButton" 
-      color="#FF4444"
-      @click="submitResult"
-      >
-    确定
-    </van-button>
-    
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-
   </div>
 </template>
 
@@ -82,16 +68,6 @@ export default {
    * 方法
   */
   methods: {
-    submitResult(){
-      this.$toast({
-        message : "成功",
-        icon : 'success'
-      })
-
-      // this.$refs.signaturePad.fromDataURL("http://pic1.win4000.com/wallpaper/c/53cdd1f7c1f21.jpg")
-
-      
-    },
     /**
      *  清空图片
      */
@@ -196,10 +172,6 @@ export default {
 </script>
 
 <style scoped>
-   .enterButton{
-    width: 90%;
-    margin-top: 10px;
-  }
 
    .tab{
         display: flex;
