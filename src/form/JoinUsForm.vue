@@ -31,6 +31,9 @@
       
     </van-cell-group>
 
+    <!-- 签名 -->
+    <SelfSignature></SelfSignature>
+
      <van-button 
       class="enterButton" 
       color="#FF4444"
@@ -43,6 +46,9 @@
 </template>
 
 <script>
+
+import SelfSignature  from '@/components/SelfSignature'
+
 export default {
     name: 'JoinUsForm',
     /**
@@ -56,7 +62,7 @@ export default {
       postalCode: String ,
     },
     components : {
-
+      SelfSignature
     },
     /** 
      * 数据

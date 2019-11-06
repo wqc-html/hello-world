@@ -28,9 +28,7 @@
 
     </JoinUsForm>
 
-    <!-- 签名 -->
-    <SelfSignature></SelfSignature>
-
+    <br/>
      
   </div>
     
@@ -39,7 +37,6 @@
 <script >
   import RotationPicture  from '@/components/RotationPicture'
   import JoinUsForm  from '@/form/JoinUsForm'
-  import SelfSignature  from '@/components/SelfSignature'
 
 
     export default {
@@ -47,7 +44,6 @@
       components : {
         RotationPicture,
         JoinUsForm,
-        SelfSignature,
       },
       /** 
        * 数据
