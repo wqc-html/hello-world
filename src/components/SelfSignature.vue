@@ -1,32 +1,6 @@
 <template>
   <div>
 
-    <!-- 表单组件 -->
-    <van-cell-group>
-      <van-field
-        label="姓名"
-        placeholder="请输入姓名"
-      />
-      <van-field
-        label="电话"
-        placeholder="请输入电话/手机号"
-      />
-      <van-field
-        label="地区"
-        placeholder="请选择省 / 市 / 区"
-      />
-      <van-field
-        label="地址"
-        placeholder="街道、楼层等信息"
-      />
-      <van-field
-        label="邮政编码"
-        placeholder="邮政编码"
-      />
-      
-    </van-cell-group>
-
-    
 
     <!-- 签名组件 -->
     <VueSignaturePad
@@ -70,7 +44,7 @@
 import { selfRequest } from "@/utils/SelfRequest.js";
 
 export default {
-  name: 'JoinForm',
+  name: 'SelfSignature',
   props: {
     msg: String
   },
@@ -79,12 +53,11 @@ export default {
   */
   data() {
     return {
-      message: 'Hello',
+      message: 'SelfSignature',
       signatureStyle : {
         border: 'gray 1px solid',
          margin : '20px auto'
       },
-      imgUrl : '',
     }
   },
   /**

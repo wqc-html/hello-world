@@ -17,21 +17,29 @@
     <van-divider :style="{ padding: '0 16px' }">
       加入我们
     </van-divider>
+
     <!-- 加入我们 表单 -->
-    <JoinForm></JoinForm>
+    <JoinUsForm></JoinUsForm>
+    
+    <!-- 签名 -->
+    <SelfSignature></SelfSignature>
+
   </div>
     
 </template>
 
 <script >
-  import JoinForm  from '@/components/JoinForm'
   import RotationPicture  from '@/components/RotationPicture'
+  import JoinUsForm  from '@/form/JoinUsForm'
+  import SelfSignature  from '@/components/SelfSignature'
+
 
     export default {
       name: 'about',
       components : {
-        JoinForm,
         RotationPicture,
+        JoinUsForm,
+        SelfSignature,
       },
       /** 
        * 数据
