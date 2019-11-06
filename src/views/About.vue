@@ -11,20 +11,7 @@
     />
 
     <!-- 图片轮播 -->
-    <van-swipe :autoplay="3000"  @change="onChangeImgLoop">
-      <van-swipe-item v-for="(image, index) in images" :key="index"  @click="onClickImg(index)">
-        <img class="imgSize" :v-lazy="image" :src="image"/>
-      </van-swipe-item>
-    </van-swipe>
-
-    <!-- 图片预览 -->
-    <van-image-preview
-      v-model="isImgShow"
-      :images="images"
-      @change="onChangeImgPre"
-    >
-      <template v-slot:index>第{{ imgPreIndex + 1 }}页</template>
-    </van-image-preview>
+    <RotationPicture></RotationPicture>
 
     <!-- 分割线 -->
     <van-divider :style="{ padding: '0 16px' }">
@@ -38,10 +25,13 @@
 
 <script >
   import JoinForm  from '@/components/JoinForm'
+  import RotationPicture  from '@/components/RotationPicture'
+
     export default {
       name: 'about',
       components : {
-        JoinForm
+        JoinForm,
+        RotationPicture,
       },
       /** 
        * 数据
