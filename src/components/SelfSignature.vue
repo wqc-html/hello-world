@@ -8,6 +8,7 @@
       height="150px"
       ref="signaturePad"
       :customStyle="signatureStyle"
+      :options="{ onBegin, onEnd }"
     />
 
     <!-- 清空 保存 删除 -->
@@ -68,6 +69,18 @@ export default {
    * 方法
   */
   methods: {
+    /**
+     * 开始涂画
+     */
+    onBegin() {
+      console.log('=== Begin 开始涂画===');
+    },
+    /**
+     * 结束涂画
+     */
+    onEnd() {
+      console.log('=== End 结束涂画===');
+    },
     /**
      *  清空图片
      */
