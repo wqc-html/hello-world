@@ -80,6 +80,13 @@ export default {
      */
     onEnd() {
       console.log('=== End 结束涂画===');
+
+      //得到signaturePad画板数据
+      const { isEmpty, data } = this.$refs.signaturePad.saveSignature();
+
+      //子组件通过this.$emit()的方式将值传递给父组件
+      //注意：这里emit第一个参数是父组件中绑定的函数名
+      this.$emit('getSignaturePadData', data)
     },
     /**
      *  清空图片

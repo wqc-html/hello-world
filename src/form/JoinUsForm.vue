@@ -32,7 +32,10 @@
     </van-cell-group>
 
     <!-- 签名 -->
-    <SelfSignature></SelfSignature>
+    <SelfSignature  
+      @getSignaturePadData="getSignaturePadData"
+      >
+    </SelfSignature>
 
      <van-button 
       class="enterButton" 
@@ -76,6 +79,7 @@ export default {
           region : this.region,
           location: this.location ,
           postalCode: this.postalCode ,
+          signaturePad : '' ,
         }
       }
     },
@@ -101,6 +105,9 @@ export default {
      * 方法
     */
     methods: {
+      /**
+       * 提交表单
+       */
      submitResult(){
         this.$toast({
           message : "成功",
@@ -109,6 +116,12 @@ export default {
 
         console.log(this.form)
       },
+      /**
+       * 得到 图画内容
+       */
+      getSignaturePadData(data){
+        this.form.signaturePad = data;
+      }
     },
     mounted(){
      
