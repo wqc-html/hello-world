@@ -8,10 +8,24 @@ export default new Router({
   // mode: 'history',
   base: process.env.BASE_URL,
   routes: [
+    //默认页面
     {
       path: '/',
+      name: 'login',
+      component: function () { 
+        return import('./views/login.vue')
+      }
+    },
+    //home 
+    {
+      path: '/home',
       name: 'home',
-      component: Home
+      // route level code-splitting
+      // this generates a separate chunk (about.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: function () { 
+        return import(/* webpackChunkName: "about" */ './views/Home.vue')
+      }
     },
     {
       path: '/about',
