@@ -4,9 +4,16 @@
  *  
  */
 import axios from 'axios'
+/**
+ *  Vuex
+ *  状态管理模式
+ *  集中式存储管理
+ * 
+ */
+import store from '@/store/VuexStore'; 
 
 let timeout = 1000 * 10;
-let baseURL = "";
+let baseURL = store.state.baseURL;
 
 /**
  * axios 对象创建配置
