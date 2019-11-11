@@ -82,7 +82,7 @@
       login(){
 
         //跳转页面
-        this.$router.push({name:'content' , query:{title:'列表'}})
+        this.$router.replace({name:'dataList' , query:{title:'数据列表', showBack : false}})
         // this.$toast({
         //   message : process.env.NODE_ENV,
         //   icon : 'success'
@@ -104,9 +104,11 @@
 
       //编译环境
       }else{
-         //设置访问地址
-        let ipAddress = "http://192.168.0.118:8888"
-        this.$store.state.baseURL = "/excavate/";
+        //设置访问地址
+        let ipAddress = "http://192.168.0.118"
+        let port = ":" + "8080";
+        let projectName = "/" + "excavate" + "/";
+        this.$store.state.baseURL = ipAddress + port + projectName ;
       }  
 
       console.log(this.$store)

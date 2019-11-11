@@ -16,6 +16,14 @@ export default new Router({
         return import('./views/login.vue')
       }
     },
+    //数据列表
+    {
+      path: '/dataList',
+      name: 'dataList',
+      component: function () { 
+        return import('./views/list/dataList.vue')
+      }
+    },
     //home 
     {
       path: '/home',
