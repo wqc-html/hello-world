@@ -1,6 +1,6 @@
 <template>
   
-  <div>
+  <div class="isBody">
 
      <!-- 导航栏 -->
     <van-nav-bar
@@ -19,10 +19,12 @@
           @load="onLoad"
         >
 
-        <van-cell
+        <SingleData
           v-for="item in list"
-          :key="item"
-          :title="item"
+          :key="item.id"
+          :progress = "item.progress"
+          :address = "item.address"
+          :time = "item.time"
         />
 
       </van-list>
@@ -44,11 +46,13 @@
 </template>
 
 <script >
- 
+
+  import SingleData  from '@/components/page/SingleData'
+
   export default {
     name: 'dataList',
     components : {
-      
+      SingleData
     },
     /** 
      * 数据
@@ -98,7 +102,12 @@
       // 异步更新数据
         setTimeout(() => {
           for (let i = 0; i < 10; i++) {
-            this.list.push(this.list.length + 1);
+            this.list.push({
+              id : i+new Date(),
+              progress: '初审中',
+              address: '九江市永修县加油站门口',
+              time: '2019-01-01至2019-09-0' + i,
+            });
           }
           // 加载状态结束
           this.loading = false;
@@ -141,6 +150,10 @@
     margin-left: -45%;
     position: fixed;
     bottom: 0;
+  }
+
+  .isBody{
+    background-color: rgb(242, 242, 242)
   }
 
 </style>
