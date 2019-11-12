@@ -10,6 +10,25 @@
       @click-left="onClickBack"
     />
 
+    <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+
+      <van-list
+          v-model="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="onLoad"
+        >
+
+        <van-cell
+          v-for="item in list"
+          :key="item"
+          :title="item"
+        />
+
+      </van-list>
+
+    </van-pull-refresh>
+
   </div>
     
 </template>
@@ -29,7 +48,11 @@
         message: 'dataList',
         form : {
 
-        }
+        },
+        list: [],
+        loading: false,
+        finished: false,
+        isLoading: false,
       }
     },
     /**
@@ -61,9 +84,28 @@
       onClickBack(){
         this.$router.back();
       },
-      login(){
- 
+      onLoad() {
+      // 异步更新数据
+        setTimeout(() => {
+          for (let i = 0; i < 10; i++) {
+            this.list.push(this.list.length + 1);
+          }
+          // 加载状态结束
+          this.loading = false;
+
+          // 数据全部加载完成
+          if (this.list.length >= 40) {
+            this.finished = true;
+          }
+        }, 500);
       },
+      onRefresh() {
+        setTimeout(() => {
+          this.$toast('刷新成功');
+          this.isLoading = false;
+          this.count++;
+        }, 500);
+      }
     },
     /**
      * 创建挂载之前
