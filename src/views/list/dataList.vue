@@ -27,7 +27,17 @@
 
       </van-list>
 
+      <div style="height:200px; width: 100%;"></div>
+
     </van-pull-refresh>
+
+    <van-button 
+          type="default"
+          class="enterButton" 
+          color="#1989fa"
+          >
+        新增申请
+    </van-button>
 
   </div>
     
@@ -125,5 +135,12 @@
 
 <style lang="less">
 
-   
+  .enterButton{
+    width: 90%;
+    margin-bottom: 20%;
+    margin-left: -45%;
+    position: fixed;
+    bottom: 0;
+  }
+
 </style>
