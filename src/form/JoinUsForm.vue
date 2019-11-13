@@ -34,6 +34,7 @@
     <!-- 签名 -->
     <SelfSignature  
       @getSignaturePadData="getSignaturePadData"
+      ref="selfSpad"
       >
     </SelfSignature>
 
@@ -114,7 +115,10 @@ export default {
           icon : 'success'
         })
 
-        console.log(this.form)
+        console.log(this.form);
+        
+        //通过this.$refs 得到子组件的对象 
+        this.$refs.selfSpad.saveImg()
       },
       /**
        * 得到 图画内容
