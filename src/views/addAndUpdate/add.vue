@@ -57,6 +57,7 @@
     <van-button 
       class="enterButton" 
       color="#1989fa"
+      :loading="submitLoading"
       >
       确定
     </van-button>
@@ -84,6 +85,7 @@
         form : {
 
         },
+        submitLoading : true,
       }
     },
     /**
@@ -95,7 +97,7 @@
         return this.$route.query.title;
       },
       isBack(){
-        return this.$route.query.showBack;
+        return this.$route.query.showBack ? true : false;
       }
     },
     /** 
@@ -126,7 +128,9 @@
      * 挂载完成
      */
     mounted(){
-     
+      setTimeout(() => {
+        this.submitLoading = false;
+      }, 2000);
     }
   }
 
