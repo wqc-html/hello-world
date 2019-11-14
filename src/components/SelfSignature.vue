@@ -13,13 +13,13 @@
 
     <!-- 清空 保存 删除 -->
     <div class="tab">
-      <van-button class="tab-item" color="#7232dd" size="small" @click="clearImg()">清空</van-button>
+      <van-button class="tab-item" color="#1989fa" size="small" @click="clearImg()">清空</van-button>
       <div style="width:10px;"></div>
-      <van-button class="tab-item" color="#7232dd" size="small" @click="undoImg()">撤销</van-button>
+      <van-button class="tab-item" color="#1989fa" size="small" @click="undoImg()">撤销</van-button>
       <div style="width:10px;"></div>
-      <van-button class="tab-item" color="#7232dd" size="small" @click="saveImg()">保存</van-button>
+      <van-button class="tab-item" color="#1989fa" size="small" @click="saveImg()">保存</van-button>
       <div style="width:10px;"></div>
-      <van-button class="tab-item" color="#7232dd" size="small" @click="uploadImg()">上传</van-button>
+      <van-button class="tab-item" color="#1989fa" size="small" @click="uploadImg()">上传</van-button>
     </div>
     
 

@@ -37,6 +37,7 @@
           type="default"
           class="enterButton" 
           color="#1989fa"
+          @click="jumpAddPage"
           >
         新增申请
     </van-button>
@@ -124,7 +125,14 @@
           this.isLoading = false;
           this.count++;
         }, 500);
-      }
+      },
+      /**
+       * 添加页面
+       */
+      jumpAddPage(){
+        //跳转页面
+        this.$router.push({name : 'add' , query : {title : '申请材料' , showBack : true}})
+      },
     },
     /**
      * 创建挂载之前
