@@ -82,7 +82,7 @@
       login(){
 
         //跳转页面
-        this.$router.replace({name:'dataList' , query:{title:'材料列表', showBack : false}})
+        this.$router.replace({name:'dataList' , query:{title:'材料列表'}})
         // this.$toast({
         //   message : process.env.NODE_ENV,
         //   icon : 'success'

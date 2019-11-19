@@ -97,7 +97,7 @@
         return this.$route.query.title;
       },
       isBack(){
-        return this.$route.query.showBack ? true : false;
+        return  true;
       }
     },
     /** 
