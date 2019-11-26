@@ -5,7 +5,7 @@
       <br/>
       <br/>
       <br/>
-      <br/>
+      <span style="font-size:28px;">{{message}}</span>
       <br/>
       <br/>
       <br/>
@@ -36,7 +36,7 @@
           >
         登录
       </van-button>
-
+      
   </div>
     
 </template>
