@@ -47,3 +47,5 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 - [element-ui](https://element.eleme.cn/#/zh-CN/component/installation) UI 组件
 - [VueSignaturePad](https://github.com/szimek/signature_pad) 签名板组件
 - [Less](http://lesscss.org/) CSS 预渲染器
+
+- [kiwi](https://github.com/alibaba/kiwi) 🐤Kiwi-国际化全流程解决方案
