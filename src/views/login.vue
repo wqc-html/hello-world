@@ -117,7 +117,17 @@
      * 挂载完成
      */
     mounted(){
-     
+      
+      this.message = 'isLogin!';
+
+      console.log(this.$el.textContent);
+
+      this.$nextTick().then(()=>{
+        console.log(this.$el.textContent);
+      })
+
+      console.log(this.$el.textContent);
+      
     }
   }
 
