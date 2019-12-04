@@ -55,8 +55,10 @@
       return {
         message: 'login',
         form : {
-
-        }
+          phone : '',
+          username : '',
+        },
+        attributeName : 'href',
       }
     },
     /**
@@ -83,35 +85,36 @@
 
         //跳转页面
         this.$router.replace({name:'dataList' , query:{title:'材料列表'}})
-        // this.$toast({
-        //   message : process.env.NODE_ENV,
-        //   icon : 'success'
-        // })
+       
+      },
+      //初始化配置
+      initConfig(){
+        //开发环境
+        if('development' == process.env.NODE_ENV){
+          //设置访问地址
+          let ipAddress = "http://192.168.0.118"
+          let port = ":" + "8080";
+          let projectName = "/" + "excavate" + "/";
+          this.$store.state.baseURL = ipAddress + port + projectName ;
 
+        //编译环境
+        }else{
+          //设置访问地址
+          let ipAddress = "http://192.168.0.118"
+          let port = ":" + "8080";
+          let projectName = "/" + "excavate" + "/";
+          this.$store.state.baseURL = ipAddress + port + projectName ;
+        }  
+
+        console.log(this.$store)
       },
     },
     /**
      * 创建挂载之前
      */
     beforeMount(){
-      //开发环境
-      if('development' == process.env.NODE_ENV){
-        //设置访问地址
-        let ipAddress = "http://192.168.0.118"
-        let port = ":" + "8080";
-        let projectName = "/" + "excavate" + "/";
-        this.$store.state.baseURL = ipAddress + port + projectName ;
-
-      //编译环境
-      }else{
-        //设置访问地址
-        let ipAddress = "http://192.168.0.118"
-        let port = ":" + "8080";
-        let projectName = "/" + "excavate" + "/";
-        this.$store.state.baseURL = ipAddress + port + projectName ;
-      }  
-
-      console.log(this.$store)
+      //初始化配置
+      this.initConfig();
     },
     /**
      * 挂载完成
