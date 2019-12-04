@@ -6,6 +6,8 @@
       <br/>
       <br/>
       <span style="font-size:28px;">{{message}}</span>
+      <span :is="'RotationPicture'"></span>
+      <br/>
       <br/>
       <br/>
       <br/>
@@ -41,12 +43,14 @@
     
 </template>
 
-<script >
- 
+<script>
+
+ import RotationPicture from '@/components/RotationPicture.vue'
+
   export default {
     name: 'login',
     components : {
-      
+      RotationPicture
     },
     /** 
      * 数据
