@@ -18,6 +18,7 @@
         placeholder="请输入电话/手机号"
         v-model="form.phone"
         required
+        @keyup.f2="log('enter')"
       />
       <van-field
         label="密码"
@@ -38,7 +39,13 @@
           >
         登录
       </van-button>
-      
+
+      <div @click="log('div1')">
+        <div @click.stop="log('div2')">
+          <a href="http://www.baidu.com" v-on:click.prevent="log('span')">span</a>
+        </div>
+      </div>
+
   </div>
     
 </template>
@@ -85,6 +92,9 @@
      * 方法
     */
     methods: {
+      log(message) {
+        console.log(message)
+      },
       login(){
 
         //跳转页面

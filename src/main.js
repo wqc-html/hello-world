@@ -30,6 +30,13 @@ Vue.use(VueSignaturePad)
  */
 Vue.config.productionTip = false
 
+/**
+ * 全局配置键盘事件
+ */
+Vue.config.keyCodes = {
+  isEnter : 13 , 
+  f2 : 113 ,
+}
 
 /**
  *  初始化Vue
